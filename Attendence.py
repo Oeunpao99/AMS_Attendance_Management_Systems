@@ -120,11 +120,14 @@ df_students["Attendance Status"] = "Absence"
 # Cache the DataFrame to improve app performance
 # Define a function to save the DataFrame to a CSV file
 
+# Function to save DataFrame to a CSV file
+# Function to save DataFrame to a CSV file
+
 
 def save_df_to_csv(df, file_name):
     df.to_csv(file_name, index=False)
 
-# Define a function to load the DataFrame from a CSV file
+# Function to load DataFrame from a CSV file
 
 
 def load_df_from_csv(file_name):
@@ -134,7 +137,7 @@ def load_df_from_csv(file_name):
         # If the file doesn't exist, initialize the DataFrame with default data
         return pd.DataFrame(student_data, columns=["Index", "ID", "Name", "Gender"])
 
-# Define a function to reset the attendance status
+# Function to reset the attendance status
 
 
 def reset_table(file_name):
@@ -156,33 +159,27 @@ def main():
     # Initialize attendance_week, subject_name, and time
     attendance_week, subject_name, time = "", "", ""
 
-    # Sidebar for Reset Attendance and Select Your Name
-    with st.sidebar:
-        st.subheader("Reset Attendance")
-        password = st.text_input(
-            "Enter the password to reset attendance:", type="password")
-        if st.button("Reset Attendance"):
-            if password == "Dec061204P@ssword":
-                reset_table(file_name)
-                st.success("Attendance has been reset.")
-            else:
-                st.error("Incorrect password.")
+    # Get the password from the user
+    password = st.sidebar.text_input(
+        "Enter the password to reset attendance:", type="password")
 
-        if password == "Dec061204P@ssword":
-            st.subheader("Enter Attendance Details")
-            attendance_week = st.text_input("Attendance status for week:")
-            subject_name_options = ['Frech', 'introdution to ML(TP)', 'introdution to ML(course)', 'program for DS(TP)', 'program for DS(course)', 'Numerical(TP)', 'Numerical(course)', 'English', 'minr projrt', 'database (course)', 'database (TP)']
-            subject_name = st.selectbox("Subject name:", options=subject_name_options)
-            time_options = ['7-9', '9-11', '1-3', '3-5']
-            time = st.selectbox("Time:", options=time_options)
+    # Check if the password is correct
+    if st.sidebar.button("Reset Attendance") and password == "Dec061204P@ssword":
+        reset_table(file_name)
+        st.success("Attendance has been reset. Refresh page now!")
 
-    # Set page configuration and title
-    st.markdown("<h1 style='font-size:30px;margin-left: 0px;'>Department of Applied Mathematics and Statistics</h1>", unsafe_allow_html=True)
-    st.markdown("<h2 style='font-size:26px;'>Student Attendance System</h2>",
-                unsafe_allow_html=True)
+    # Attendance Details
+    if password == "Dec061204P@ssword":
+        st.markdown("---")
+        st.subheader("Attendance Details")
+        attendance_week = st.text_input("Attendance status for week:")
+        subject_name_options = ['Frech', 'introdution to ML(TP)', 'introdution to ML(course)', 'program for DS(TP)', 'program for DS(course)',
+                                'Numerical(TP)', 'Numerical(course)', 'English', 'minr projrt', 'database (course)', 'database (TP)']
+        subject_name = st.selectbox(
+            "Subject name:", options=subject_name_options)
+        time_options = ['7-9', '9-11', '1-3', '3-5']
+        time = st.selectbox("Time:", options=time_options)
 
-    # Add a horizontal line separator
-    # Add attendance details
     if attendance_week and subject_name and time:
         st.markdown("---")
         st.subheader("Attendance Details")
@@ -193,9 +190,7 @@ def main():
             unsafe_allow_html=True
         )
 
-        # st.write(f"Subject name: {subject_name}")
-        # st.write(f"Time: {time}")
-
+        # Select Your Name
         st.markdown("---")
         st.subheader("Select Your Name")
         name_query = st.text_input("Search your name here:")
@@ -217,24 +212,24 @@ def main():
                         f"Attendance submitted successfully for {selected_name}.")
                     st.balloons()
 
-        # Add student list table
-        st.markdown("---")
-        st.subheader("Student List")
-        st.table(df_students[["Name", "ID", "Attendance Status"]].style.applymap(
-            lambda x: 'color: red' if x.strip() == 'Absence' else 'color: green').set_table_styles([
-                {
-                    'selector': 'th',
-                    'props': [
-                        ('font-weight', 'bold'),
-                        ('text-align', 'center'),
-                        ('color', 'grey')
-                    ]
-                }
-            ]))
-        # Add credit information
-        st.markdown("---")
-        st.write("Project Holder by: OEUN PAO")
-        st.write("Student of Department of Applied Mathematics and Statistics, ITC")
+    # Student List Table
+    st.markdown("---")
+    st.subheader("Student List")
+    st.table(df_students[["Name", "ID", "Attendance Status"]].style.applymap(
+        lambda x: 'color: red' if x.strip() == 'Absence' else 'color: green').set_table_styles([
+            {
+                'selector': 'th',
+                'props': [
+                    ('font-weight', 'bold'),
+                    ('text-align', 'center'),
+                    ('color', 'grey')
+                ]
+            }
+        ]))
+    # Credit Information
+    st.markdown("---")
+    st.write("Project Holder by: OEUN PAO")
+    st.write("Student of Department of Applied Mathematics and Statistics, ITC")
 
 
 if __name__ == "__main__":
